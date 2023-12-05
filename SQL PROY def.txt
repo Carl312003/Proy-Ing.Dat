@@ -121,19 +121,19 @@ SELECT * FROM DUAL;
 
 -- Insertar datos en la tabla Pedido
 INSERT ALL 
-    INTO Pedido (ID_Pedido, Monto, Descripcion, Cantidad, ID_Cliente) VALUES (2001, 150.75, 'Pedido 1', 3, 1001)
-    INTO Pedido (ID_Pedido, Monto, Descripcion, Cantidad, ID_Cliente) VALUES (2002, 200.50, 'Pedido 2', 2, 1002)
-    INTO Pedido (ID_Pedido, Monto, Descripcion, Cantidad, ID_Cliente) VALUES (2003, 100.25, 'Pedido 3', 4, 1003)
-    INTO Pedido (ID_Pedido, Monto, Descripcion, Cantidad, ID_Cliente) VALUES (2004, 300.00, 'Pedido 4', 1, 1004)
-    INTO Pedido (ID_Pedido, Monto, Descripcion, Cantidad, ID_Cliente) VALUES (2005, 180.30, 'Pedido 5', 5, 1005)
+    INTO Pedido (ID_Pedido, Monto, Descripcion, Cantidad, ID_Cliente, ID_Producto) VALUES (2001, 150.75, 'Pedido 1', 3, 1001, 3001)
+    INTO Pedido (ID_Pedido, Monto, Descripcion, Cantidad, ID_Cliente, ID_Producto) VALUES (2002, 200.50, 'Pedido 2', 2, 1002, 3002)
+    INTO Pedido (ID_Pedido, Monto, Descripcion, Cantidad, ID_Cliente, ID_Producto) VALUES (2003, 100.25, 'Pedido 3', 4, 1003, 3003)
+    INTO Pedido (ID_Pedido, Monto, Descripcion, Cantidad, ID_Cliente, ID_Producto) VALUES (2004, 300.00, 'Pedido 4', 1, 1004, 3004)
+    INTO Pedido (ID_Pedido, Monto, Descripcion, Cantidad, ID_Cliente, ID_Producto) VALUES (2005, 180.30, 'Pedido 5', 5, 1005, 3005)
 SELECT * FROM DUAL;
 
 -- Insertar datos en la tabla Producto
-INSERT INTO Producto (ID_Producto, Nombre, Tipo, Stock, Precio, Talla, Color, ID_Pedido) VALUES (3001, 'Camisa', 'Ropa', 20, 25.99, 'M', 'Azul', 2001)
-INSERT INTO Producto (ID_Producto, Nombre, Tipo, Stock, Precio, Talla, Color, ID_Pedido) VALUES (3002, 'Zapatos', 'Calzado', 15, 49.99, '42', 'Negro', 2002)
-INSERT INTO Producto (ID_Producto, Nombre, Tipo, Stock, Precio, Talla, Color, ID_Pedido) VALUES (3003, 'Pantalón', 'Ropa', 30, 35.50, 'L', 'Gris', 2003)
-INSERT INTO Producto (ID_Producto, Nombre, Tipo, Stock, Precio, Talla, Color, ID_Pedido) VALUES (3004, 'Reloj', 'Accesorio', 10, 99.95, 'XL', 'Plateado', 2004)
-INSERT INTO Producto (ID_Producto, Nombre, Tipo, Stock, Precio, Talla, Color, ID_Pedido) VALUES (3005, 'Bufanda', 'Accesorio', 25, 15.75, 'S', 'Rojo', 2005)
+INSERT INTO Producto (ID_Producto, Nombre, Tipo, Stock, Precio, Talla, Color, ID_Vendedor) VALUES (3001, 'Camisa', 'Ropa', 20, 25.99, 'M', 'Azul', 101);
+INSERT INTO Producto (ID_Producto, Nombre, Tipo, Stock, Precio, Talla, Color, ID_Vendedor) VALUES (3002, 'Zapatos', 'Calzado', 15, 49.99, '42', 'Negro', 102);
+INSERT INTO Producto (ID_Producto, Nombre, Tipo, Stock, Precio, Talla, Color, ID_Vendedor) VALUES (3003, 'Pantalón', 'Ropa', 30, 35.50, 'L', 'Gris', 103);
+INSERT INTO Producto (ID_Producto, Nombre, Tipo, Stock, Precio, Talla, Color, ID_Vendedor) VALUES (3004, 'Reloj', 'Accesorio', 10, 99.95, 'XL', 'Plateado', 104);
+INSERT INTO Producto (ID_Producto, Nombre, Tipo, Stock, Precio, Talla, Color, ID_Vendedor) VALUES (3005, 'Bufanda', 'Accesorio', 25, 15.75, 'S', 'Rojo', 105);
 
 -- Insertar datos en la tabla Pago
 INSERT ALL 
@@ -193,14 +193,18 @@ END;
 
 
 //Eliminar (Funciono)
-EXEC EliminarVendedor(101);
+EXEC EliminarVendedor(103);
 
 CREATE OR REPLACE PROCEDURE EliminarVendedor(
-    p_ID_Vendedor IN NUMBER
+    p_ID_Vendedor IN NUMBER,
+    p_DNI IN NUMBER
 ) AS
 BEGIN
     DELETE FROM Notificacion WHERE ID_Vendedor = p_ID_Vendedor;
+    DELETE FROM PRODUCTO WHERE ID_VENDEDOR = p_ID_Vendedor;
     DELETE FROM Vendedor WHERE ID_Vendedor = p_ID_Vendedor;
+    DELETE FROM PERSONA WHERE DNI = p_DNI;
+    COMMIT;
 END EliminarVendedor;
 
 
@@ -501,6 +505,9 @@ BEGIN
 END AntesEliminarCliente;
 
 
+
+
+
 --Seleccionar monto por dni de cliente
 SELECT ID_Cliente, SUM(Monto) 
 FROM Pago
@@ -522,4 +529,61 @@ GROUP BY
 ORDER BY
     MontoTotal DESC;
     
-   
+--
+SELECT
+    pe.Nombre AS NombrePersona,
+    pe.DNI AS DniPersona,
+    p.Monto,
+    p.Descripcion,
+    p.Cantidad
+FROM Pedido p
+JOIN Cliente c ON p.ID_Cliente = c.ID_Cliente
+JOIN Persona pe ON c.DNI = pe.DNI;
+
+SELECT 
+    p.ID_Pedido,
+    p.Monto,
+    p.Descripcion,
+    p.Cantidad,
+    pa.FechaPago
+FROM Pedido p
+JOIN Pago pa ON p.ID_Pedido = pa.ID_Pedido
+ORDER BY pa.FechaPago;
+
+
+SELECT 
+    p.ID_Pedido,
+    pe.Nombre AS NombrePersona,
+    pe.ApellidoPaterno AS ApellidoPersona,
+    pe.DNI AS DniPersona,
+    p.Monto,
+    p.Descripcion,
+    p.Cantidad
+FROM Pedido p 
+JOIN Cliente c ON p.ID_Cliente = c.ID_Cliente
+JOIN Persona pe ON c.DNI = pe.DNI
+WHERE pe.DNI = 123456789
+
+
+BEGIN
+    UPDATE Pago pa
+    SET pa.Estado = 'Pendiente'
+    WHERE pa.ID_Cliente IN (
+        SELECT c.ID_Cliente
+        FROM Cliente c
+        JOIN Persona pe ON c.DNI = pe.DNI
+        WHERE pe.ApellidoPaterno = 'Perez'
+    );
+    
+    COMMIT;
+END;
+    
+
+DROP TABLE CLIENTE;
+DROP TABLE EMPLEADO;
+DROP TABLE NOTIFICACION;
+DROP TABLE PAGO;
+DROP TABLE PEDIDO;
+DROP TABLE PERSONA;
+DROP TABLE PRODUCTO;
+DROP TABLE VENDEDOR;
