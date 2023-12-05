@@ -1,0 +1,213 @@
+
+.navbar.navbar-light.bg-light {
+    background-color: #000000 !important; /* Cambia al color que prefieras */
+}
+
+.navbar-brand {
+    color: #ffffff !important; /* !important se utiliza para anular posibles estilos de Bootstrap */
+}
+
+.navbar-nav a {
+    color: #ffffff !important; /* !important se utiliza para anular posibles estilos de Bootstrap */
+}
+
+.navbar-nav a:hover,
+.navbar-nav a:focus {
+    color: #4CA1AF !important;
+}
+
+.navbar-toggler-icon {
+    background-color: #6b6b6b; /* Cambia al color que prefieras */
+}
+
+body {
+    background: #2C3E50;
+    /* fallback for old      */
+    background: -webkit-linear-gradient(to right, #4CA1AF, #2C3E50);
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #4CA1AF, #2C3E50);
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+h1 {
+    text-align: center;
+    line-height: 80px;
+    font-size: 50px;
+    font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    color: white;
+}
+
+#container0{
+    border: 1px solid black; /* Ancho del borde y color del borde */
+    background-color: #f8f9fa; /* Color de fondo */
+    padding: 20px; /* Espaciado interno dentro del contenedor */
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+#container1{
+    border: 1px solid black; /* Ancho del borde y color del borde */
+    background-color: #f8f9fa; /* Color de fondo */
+    padding: 20px; /* Espaciado interno dentro del contenedor */
+    position: relative;
+    display: flex;
+    flex-direction: row;
+}
+
+#descripcion.texto {
+    margin-right: 20px;
+}
+
+#img-thumnail {
+    align-self: flex-end;
+    flex-shrink: 0;
+}
+/* Estilos personalizados para la tabla */
+.table thead th {
+    background-color: black; /* Color de fondo de la cabecera de la tabla */
+    color: #fff; /* Color de texto en la cabecera de la tabla */
+    text-align: center  ;
+}
+
+.table tbody tr {
+    background-color: #ffffff; /* Color de fondo de las filas */
+}
+
+/* Estilo adicional para las filas alternas (si lo deseas) */
+.table tbody tr:nth-child(odd) {
+    background-color: #AFEEEE; /* Color de fondo de las filas alternas */
+}
+
+.container img {
+    max-width: 100%; /* Ajusta el ancho máximo de la imagen al contenedor */
+    height: auto; /* Mantiene la proporción de aspecto de la imagen */
+    width: 20%;
+    margin-left: 100px;
+}
+
+.container p {
+    flex: 1;
+    margin-right: 20px;
+}
+
+#container2 {
+    margin-top: 20px;
+    border: 1px solid rgba(0,0,0,0.0); /* Ancho del borde y color del borde */
+    background-color: rgba(0,0,0,0.0); /* Color de fondo */
+    padding: 20px; /* Espaciado interno dentro del contenedor */
+    display: flex;
+    justify-content: center;
+}
+
+.btn {
+    padding: 10px 20px; /* Tamaño del botón */
+    background-color: #000000; /* Color de fondo del botón */
+    color: #ffffff; /* Color del texto del botón */
+    transition: background-color 0.3s, color 0.3s;;
+    border: 1px solid #ffffff; /* Borde del botón */
+    border-radius: 10px; /* Bordes redondeados del botón */
+    margin-right: 20px;
+}
+
+.btn:hover {
+    background-color: #29a8b9; /* Nuevo color de fondo al pasar el cursor */
+    color: #000000; /* Nuevo color de texto al pasar el cursor */
+}
+
+#container3{
+    width: 300px;
+    position: relative;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    height: 85vh;
+    border: 1px solid black; /* Ancho del borde y color del borde */
+    background-color: #f8f9fa; /* Color de fondo */
+    padding: 50px; /* Espaciado interno dentro del contenedor */
+    margin-bottom: 20px;    
+}
+
+#container3 label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+#container0 label {
+    display: block;
+    margin-bottom: 5px;
+    justify-self: center;
+    align-self: center;
+}
+
+#container3 input {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    justify-self: center;
+}
+
+#container0 input {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    align-self: center;
+}
+
+#container1 h2 {
+    text-align: center;
+    line-height: 80px;
+    font-size: 50px;
+    font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    color: black;
+}
+
+#containerR{
+    border: 1px solid black;
+    background-color: #f8f9fa;
+    padding: 20px;
+    width: 50%; /* Puedes ajustar el ancho según tus necesidades */
+    margin: 0 auto; /* Configura los márgenes automáticos para centrar horizontalmente */
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center; /* Centra verticalmente los elementos dentro del contenedor */
+    justify-content: center;
+}
+
+#containerR #result {
+    text-align: center;
+    line-height: 80px;
+    font-size: 50px;
+    font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    color: black;
+}
+
+#container3 #btnAR {
+    margin-bottom: 10px;
+    margin-left: 30px;
+}
+#container3 #btnAC {
+    margin-bottom: 10px;
+    margin-left: 50px;
+}
+#container3 #btnDR {
+    margin-bottom: 10px;
+    margin-left: 30px;
+}
+#container3 #btnDC {
+    margin-bottom: 10px;
+    margin-left: 50px;
+}
+
+#imgprod {
+    background-color: rgba(0,0,0,0.0); /* Color de fondo */
+    margin-left: 50px;
+}
