@@ -1,0 +1,404 @@
+CREATE TABLE Persona
+(
+    DNI INT PRIMARY KEY,
+    Nombre VARCHAR2(30),
+    ApellidoPaterno VARCHAR2(30),
+    ApellidoMaterno VARCHAR2(30),
+    Telefono NUMBER
+);
+
+CREATE TABLE Empleado
+(
+    ID_Empleado NUMBER PRIMARY KEY,
+    DNI NUMBER,
+    Salario NUMBER, 
+    FOREIGN KEY (DNI) REFERENCES Persona(DNI)
+);
+
+CREATE TABLE Vendedor
+(
+    ID_Vendedor NUMBER PRIMARY KEY,
+    DNI NUMBER,
+    FOREIGN KEY (DNI) REFERENCES Persona(DNI)
+);
+
+CREATE TABLE Cliente
+(
+    ID_Cliente NUMBER PRIMARY KEY,
+    DNI NUMBER,
+    FOREIGN KEY (DNI) REFERENCES Persona(DNI)
+);
+
+CREATE TABLE Pedido
+(
+    ID_Pedido NUMBER PRIMARY KEY,
+    Monto NUMBER(5,2),
+    Descripcion VARCHAR2(50),
+    Cantidad NUMBER,
+    ID_Cliente NUMBER,
+    FOREIGN KEY (ID_Cliente) REFERENCES Cliente(ID_Cliente)
+);
+
+CREATE TABLE Producto
+(
+    ID_Producto NUMBER PRIMARY KEY,
+    Nombre VARCHAR2(50),
+    Tipo VARCHAR2(50),
+    Stock NUMBER,
+    Precio Number(5,2),
+    Talla VARCHAR2(4),
+    Color VARCHAR2(30),
+    ID_Pedido NUMBER,
+
+
+    FOREIGN KEY (ID_Pedido) REFERENCES Pedido(ID_Pedido)
+);
+
+CREATE TABLE Pago
+(
+    ID_Pago NUMBER PRIMARY KEY,
+    Monto NUMBER(5,2),
+    FechaPago DATE,
+    Estado VARCHAR2(30),
+    ID_Cliente NUMBER,
+    ID_Pedido NUMBER,
+    FOREIGN KEY (ID_Cliente) REFERENCES Cliente(ID_Cliente),
+    FOREIGN KEY (ID_Pedido) REFERENCES Pedido(ID_Pedido)
+);
+
+CREATE TABLE Notificacion
+(
+    ID_Notificacion NUMBER PRIMARY KEY,
+    Tipo VARCHAR2(30),
+    Descripcion VARCHAR2(100),
+    ID_Pedido NUMBER,
+    ID_Empleado NUMBER,
+    ID_Vendedor NUMBER,
+    ID_Pago NUMBER,
+    FOREIGN KEY (ID_Pedido) REFERENCES Pedido(ID_Pedido),
+    FOREIGN KEY (ID_Empleado) REFERENCES Empleado(ID_Empleado),
+    FOREIGN KEY (ID_Vendedor) REFERENCES Vendedor(ID_Vendedor),
+    FOREIGN KEY (ID_Pago) REFERENCES Pago(ID_Pago)
+);
+--GODINES
+
+--data para la tabla
+--data para tabla PERSONA
+INSERT ALL 
+    INTO Persona (DNI, Nombre, ApellidoPaterno, ApellidoMaterno, Telefono) VALUES (123456789, 'Juan', 'Perez', 'Gomez', 555123456)
+    INTO Persona (DNI, Nombre, ApellidoPaterno, ApellidoMaterno, Telefono) VALUES (234567890, 'Maria', 'Lopez', 'Martinez', 555234567)
+    INTO Persona (DNI, Nombre, ApellidoPaterno, ApellidoMaterno, Telefono) VALUES (345678901, 'Carlos', 'Rodriguez', 'Gonzalez', 555345678)
+    INTO Persona (DNI, Nombre, ApellidoPaterno, ApellidoMaterno, Telefono) VALUES (456789012, 'Ana', 'Martinez', 'Fernandez', 555456789)
+    INTO Persona (DNI, Nombre, ApellidoPaterno, ApellidoMaterno, Telefono) VALUES (567890123, 'Pedro', 'Gonzalez', 'Lopez', 555567890)
+SELECT * FROM DUAL;
+--data para empleado
+INSERT ALL 
+    INTO Empleado (ID_Empleado, DNI, Salario) VALUES (1, 123456789, 50000)
+    INTO Empleado (ID_Empleado, DNI, Salario) VALUES (2, 234567890, 48000)
+    INTO Empleado (ID_Empleado, DNI, Salario) VALUES (3, 345678901, 55000)
+    INTO Empleado (ID_Empleado, DNI, Salario) VALUES (4, 456789012, 60000)
+    INTO Empleado (ID_Empleado, DNI, Salario) VALUES (5, 567890123, 52000)
+SELECT * FROM DUAL;
+--data para la tabla VENDEDOR
+INSERT ALL 
+    INTO Vendedor (ID_Vendedor, DNI) VALUES (101, 123456789)
+    INTO Vendedor (ID_Vendedor, DNI) VALUES (102, 234567890)
+    INTO Vendedor (ID_Vendedor, DNI) VALUES (103, 345678901)
+    INTO Vendedor (ID_Vendedor, DNI) VALUES (104, 456789012)
+    INTO Vendedor (ID_Vendedor, DNI) VALUES (105, 567890123)
+SELECT * FROM DUAL;
+--data para la tabla CLIENTE
+INSERT ALL 
+    INTO Cliente (ID_Cliente, DNI) VALUES (1001, 123456789)
+    INTO Cliente (ID_Cliente, DNI) VALUES (1002, 234567890)
+    INTO Cliente (ID_Cliente, DNI) VALUES (1003, 345678901)
+    INTO Cliente (ID_Cliente, DNI) VALUES (1004, 456789012)
+    INTO Cliente (ID_Cliente, DNI) VALUES (1005, 567890123)
+SELECT * FROM DUAL;
+--data para la tabla PEDIDO
+INSERT ALL 
+    INTO Pedido (ID_Pedido, Monto, Descripcion, Cantidad, ID_Cliente) VALUES (2001, 150.75, 'Pedido 1', 3, 1001)
+    INTO Pedido (ID_Pedido, Monto, Descripcion, Cantidad, ID_Cliente) VALUES (2002, 200.50, 'Pedido 2', 2, 1002)
+    INTO Pedido (ID_Pedido, Monto, Descripcion, Cantidad, ID_Cliente) VALUES (2003, 100.25, 'Pedido 3', 4, 1003)
+    INTO Pedido (ID_Pedido, Monto, Descripcion, Cantidad, ID_Cliente) VALUES (2004, 300.00, 'Pedido 4', 1, 1004)
+    INTO Pedido (ID_Pedido, Monto, Descripcion, Cantidad, ID_Cliente) VALUES (2005, 180.30, 'Pedido 5', 5, 1005)
+SELECT * FROM DUAL;
+--data para la tabla PRODUCTO
+INSERT INTO Producto (ID_Producto, Nombre, Tipo, Stock, Precio, Talla, Color, ID_Pedido) VALUES (3001, 'Camisa', 'Ropa', 20, 25.99, 'M', 'Azul', 2001);
+INSERT INTO Producto (ID_Producto, Nombre, Tipo, Stock, Precio, Talla, Color, ID_Pedido) VALUES (3002, 'Zapatos', 'Calzado', 15, 49.99, '42', 'Negro', 2002);
+INSERT INTO Producto (ID_Producto, Nombre, Tipo, Stock, Precio, Talla, Color, ID_Pedido) VALUES (3003, 'Pantalón', 'Ropa', 30, 35.50, 'L', 'Gris', 2003);
+INSERT INTO Producto (ID_Producto, Nombre, Tipo, Stock, Precio, Talla, Color, ID_Pedido) VALUES (3004, 'Reloj', 'Accesorio', 10, 99.95, 'XL', 'Plateado', 2004);
+INSERT INTO Producto (ID_Producto, Nombre, Tipo, Stock, Precio, Talla, Color, ID_Pedido) VALUES (3005, 'Bufanda', 'Accesorio', 25, 15.75, 'S', 'Rojo', 2005);
+--data para la tabla PAGO
+INSERT ALL 
+    INTO Pago (ID_Pago, Monto, FechaPago, Estado, ID_Cliente, ID_Pedido) VALUES (4001, 150.75, TO_DATE('2023-01-15', 'YYYY-MM-DD'), 'Pagado', 1001, 2001)
+    INTO Pago (ID_Pago, Monto, FechaPago, Estado, ID_Cliente, ID_Pedido) VALUES (4002, 200.50, TO_DATE('2023-02-10', 'YYYY-MM-DD'), 'Pagado', 1002, 2002)
+    INTO Pago (ID_Pago, Monto, FechaPago, Estado, ID_Cliente, ID_Pedido) VALUES (4003, 100.25, TO_DATE('2023-03-05', 'YYYY-MM-DD'), 'Pendiente', 1003, 2003)
+    INTO Pago (ID_Pago, Monto, FechaPago, Estado, ID_Cliente, ID_Pedido) VALUES (4004, 300.00, TO_DATE('2023-04-20', 'YYYY-MM-DD'), 'Pagado', 1004, 2004)
+    INTO Pago (ID_Pago, Monto, FechaPago, Estado, ID_Cliente, ID_Pedido) VALUES (4005, 180.30, TO_DATE('2023-05-12', 'YYYY-MM-DD'), 'Pendiente', 1005, 2005)
+SELECT * FROM DUAL;
+--data para la tabla NOTIFICACION
+INSERT ALL 
+    INTO Notificacion (ID_Notificacion, Tipo, Descripcion, ID_Pedido, ID_Empleado, ID_Vendedor, ID_Pago) VALUES (5001, 'Entrega', 'El pedido 2001 ha sido entregado', 2001, 1, 101, NULL)
+    INTO Notificacion (ID_Notificacion, Tipo, Descripcion, ID_Pedido, ID_Empleado, ID_Vendedor, ID_Pago) VALUES (5002, 'Seguimiento', 'Seguimiento del pedido 2002', 2002, 2, 102, NULL)
+    INTO Notificacion (ID_Notificacion, Tipo, Descripcion, ID_Pedido, ID_Empleado, ID_Vendedor, ID_Pago) VALUES (5003, 'Aviso', 'Notificación de stock bajo para producto 3003', NULL, 3, 103, NULL)
+    INTO Notificacion (ID_Notificacion, Tipo, Descripcion, ID_Pedido, ID_Empleado, ID_Vendedor, ID_Pago) VALUES (5004, 'Confirmación', 'Pago confirmado para pedido 2004', 2004, 4, 104, 4004)
+    INTO Notificacion (ID_Notificacion, Tipo, Descripcion, ID_Pedido, ID_Empleado, ID_Vendedor, ID_Pago) VALUES (5005, 'Recordatorio', 'Recordatorio de pago para pedido 2005', 2005, 5, 105, 4005)
+SELECT * FROM DUAL;
+
+--USUARIOS
+--usuario vendedor
+CREATE USER vendedor IDENTIFIED BY vendedor_password;
+GRANT CONNECT, RESOURCE TO vendedor;
+
+--permisos
+GRANT INSERT ON Pedido TO vendedor;
+GRANT INSERT ON Notificacion TO vendedor;
+
+--ususario empleado
+CREATE USER empleado IDENTIFIED BY empleado_password;
+GRANT CONNECT, RESOURCE TO empleado;
+
+--permisos
+GRANT SELECT ON Notificacion TO empleado;
+
+--usuario admin
+CREATE USER admin IDENTIFIED BY admin_password;
+GRANT CONNECT, RESOURCE, DBA TO admin;
+
+
+--trigger 1 (nuevo)
+
+-- Crear la tabla auxiliar para almacenar el contador de ventas
+CREATE TABLE ContadorVentas (
+    ID_Contador NUMBER PRIMARY KEY,
+    TotalVentas NUMBER
+);
+
+-- Inicializar la tabla de contador con un valor inicial
+INSERT INTO ContadorVentas (ID_Contador, TotalVentas) VALUES (1, 0);
+
+-- Crear o reemplazar el trigger
+CREATE OR REPLACE TRIGGER ActualizarContadorVentas
+AFTER INSERT ON Pedido
+FOR EACH ROW
+DECLARE
+    v_NuevoContador NUMBER;
+BEGIN
+    -- Obtener el contador actual
+    SELECT TotalVentas + 1 INTO v_NuevoContador
+    FROM ContadorVentas
+    WHERE ID_Contador = 1;
+
+    -- Actualizar el contador en la tabla auxiliar
+    UPDATE ContadorVentas
+    SET TotalVentas = v_NuevoContador
+    WHERE ID_Contador = 1;
+END ActualizarContadorVentas;
+
+
+--procedures
+CREATE OR REPLACE PROCEDURE CrearCliente(
+        p_ID_Cliente IN NUMBER,
+        p_DNI IN NUMBER,
+        p_Nombre IN VARCHAR2,
+        p_ApellidoPaterno IN VARCHAR2,
+        p_ApellidoMaterno IN VARCHAR2,
+        p_Telefono IN NUMBER
+    ) AS
+    BEGIN
+        INSERT INTO Persona(DNI, Nombre, ApellidoPaterno, ApellidoMaterno, Telefono)
+        VALUES (p_DNI, p_Nombre, p_ApellidoPaterno, p_ApellidoMaterno, p_Telefono);
+
+        INSERT INTO Cliente(ID_Cliente, DNI) VALUES (p_ID_Cliente, p_DNI);
+    END CrearCliente;
+
+EXEC CrearCliente(atributos....);
+
+//Actualizar (Funciona)
+CREATE OR REPLACE PROCEDURE ActualizarMontoPedido(
+    p_ID_Pedido IN NUMBER,
+    p_NuevoMonto IN NUMBER
+) AS
+BEGIN
+    UPDATE Pedido SET Monto = p_NuevoMonto WHERE ID_Pedido = p_ID_Pedido;
+END ActualizarMontoPedido;
+
+//Comprobacion del funcionamiento del procedure actualizar
+DECLARE
+    v_ID_Pedido NUMBER := 2001; -- Poner el valor correcto
+    v_NuevoMonto NUMBER := 400; -- Poner el valor correcto
+BEGIN
+    ActualizarMontoPedido(p_ID_Pedido => v_ID_Pedido, p_NuevoMonto => v_NuevoMonto);
+    COMMIT;
+END;
+/
+
+//Eliminar (Funciono)
+EXEC EliminarVendedor(101);
+
+CREATE OR REPLACE PROCEDURE EliminarVendedor(
+    p_ID_Vendedor IN NUMBER
+) AS
+BEGIN
+    DELETE FROM Notificacion WHERE ID_Vendedor = p_ID_Vendedor;
+    DELETE FROM Vendedor WHERE ID_Vendedor = p_ID_Vendedor;
+END EliminarVendedor;
+
+
+
+--funciones
+//Funcion 1 (funciona)
+CREATE OR REPLACE FUNCTION CalcularTotalPagoCliente(
+    p_ID_Cliente IN NUMBER
+) RETURN NUMBER AS
+    v_TotalPago NUMBER;
+BEGIN
+    SELECT SUM(Monto) INTO v_TotalPago FROM Pago WHERE ID_Cliente = p_ID_Cliente;
+    RETURN v_TotalPago;
+END CalcularTotalPagoCliente;
+
+//Comprobacion de la funcion 1
+SET SERVEROUTPUT ON;
+
+DECLARE
+    v_ClienteID NUMBER := 1001; -- Cambia el valor según el ID del cliente que deseas consultar
+    v_Resultado NUMBER;
+BEGIN
+    v_Resultado := CalcularTotalPagoCliente(v_ClienteID);
+    DBMS_OUTPUT.PUT_LINE('El total de pagos para el cliente ' || v_ClienteID || ' es: ' || v_Resultado);
+END;
+
+
+//Funcion 2
+CREATE OR REPLACE FUNCTION ContarEmpleados RETURN NUMBER AS
+    v_Count NUMBER;
+BEGIN
+    SELECT COUNT(*) INTO v_Count FROM Empleado;
+    RETURN v_Count;
+END ContarEmpleados;
+
+SET SERVEROUTPUT ON;
+
+DECLARE
+    v_Resultado NUMBER;
+BEGIN
+    v_Resultado := ContarEmpleados();
+    DBMS_OUTPUT.PUT_LINE('Número de empleados: ' || v_Resultado);
+END;
+/
+
+//funcion 3
+CREATE OR REPLACE FUNCTION ObtenerDescripcionNotificacion(
+    p_ID_Notificacion IN NUMBER
+) RETURN VARCHAR2 AS
+    v_Descripcion VARCHAR2(100);
+BEGIN
+    SELECT Descripcion INTO v_Descripcion FROM Notificacion WHERE ID_Notificacion = p_ID_Notificacion;
+    RETURN v_Descripcion;
+END ObtenerDescripcionNotificacion;
+
+SET SERVEROUTPUT ON;
+
+DECLARE
+    v_ID_Notificacion NUMBER := 5002; -- Poner el valor correcto
+    v_Descripcion VARCHAR2(100);
+BEGIN
+    v_Descripcion := ObtenerDescripcionNotificacion(p_ID_Notificacion => v_ID_Notificacion);
+    DBMS_OUTPUT.PUT_LINE('Descripción de la notificación: ' || v_Descripcion);
+END;
+
+
+
+--funciones Dml
+SELECT ID_Cliente, SUM(Monto) 
+FROM Pago
+GROUP BY ID_Cliente;
+
+--Monto total de cliente segun su nombre
+SELECT ID_Cliente, SUM(Monto) 
+FROM Pago
+GROUP BY ID_Cliente;
+--error
+SELECT
+    Cliente.ID_Cliente,
+    Persona.Nombre,
+    SUM(Pago.Monto) AS MontoTotal
+FROM
+    Cliente
+JOIN
+    Persona ON Cliente.DNI = Persona.DNI
+JOIN
+    Pago ON Cliente.ID_Cliente = Pago.ID_Cliente
+GROUP BY
+    Cliente.ID_Cliente, Persona.Nombre
+ORDER BY
+    MontoTotal DESC;
+
+
+--SENTENCIAS DML
+-- Iniciar una transacción
+DECLARE
+  v_id_cliente Cliente.ID_Cliente%TYPE;
+BEGIN
+  -- Obtener el ID_Cliente para el apellido 'Perez'
+  SELECT c.ID_Cliente INTO v_id_cliente
+  FROM Cliente c
+  JOIN Persona pe ON c.DNI = pe.DNI
+  WHERE pe.ApellidoPaterno = 'Perez';
+
+  -- Actualizar el estado de los pagos para el cliente identificado
+  UPDATE Pago pa
+  SET pa.Estado = 'Pendiente'
+  WHERE pa.ID_Cliente = v_id_cliente;
+
+  -- Confirmar la transacción
+  COMMIT;
+END;
+
+
+SELECT
+    pe.Nombre AS NombrePersona,
+    pe.DNI AS DniPersona,
+    p.Monto,
+    p.Descripcion,
+    p.Cantidad
+FROM Pedido p
+JOIN Cliente c ON p.ID_Cliente = c.ID_Cliente
+JOIN Persona pe ON c.DNI = pe.DNI;
+
+
+SELECT
+    p.ID_Pedido,
+    pe.Nombre AS NombrePersona,
+    pe.ApellidoPaterno AS ApellidoPersona,
+    pe.DNI AS DniPersona,
+    p.Monto,
+    p.Descripcion,
+    p.Cantidad
+FROM Pedido p
+JOIN Cliente c ON p.ID_Cliente = c.ID_Cliente
+JOIN Persona pe ON c.DNI = pe.DNI
+WHERE pe.DNI = 123456789;
+
+SELECT
+    p.ID_Pedido,
+    p.Monto,
+    p.Descripcion,
+    p.Cantidad,
+    pa.FechaPago
+FROM Pedido p
+JOIN Pago pa ON p.ID_Pedido = pa.ID_Pedido
+ORDER BY pa.FechaPago;
+
+
+
+--por si pasa algo
+DROP TABLE Notificacion;
+DROP TABLE Pago;
+DROP TABLE Producto;
+DROP TABLE Pedido;
+DROP TABLE Cliente;
+DROP TABLE Vendedor;
+DROP TABLE Empleado;
+DROP TABLE Persona;
