@@ -1,0 +1,196 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h1>Obtener información de los datos</h1>
+<div class="container" id="container0">
+    <button class="btn" id="button1">Pagos totales</button>
+    <button class="btn" id="button2">Contar empleados</button>
+    <button class="btn" id="button3">Obtener descripción</button>
+    <button class="btn" id="button4">Actualizar contador de ventas</button>
+
+    <div id="ventanaFunciones" style="display: none;">
+        <form id="formPagos" method="post" action="/PagosTotales" style="display: none;">
+            <label for="idPago">ID:</label>
+            <input type="number" id="idPago" name="idPago">
+            <button class="btn" id="btnExe" type="submit">Ejecutar</button>
+            <button class="btn" id="btnCanc">Cancelar</button>
+        </form>
+
+        <form id="formDescripcion" method="post" action="/ObtenerDescr" style="display: none;">
+            <label for="idNotificacion">ID:</label>
+            <input type="number" id="idNotificacion" name="idNotificacion">
+            <button class="btn" id="btnExe1" type="submit">Ejecutar</button>
+            <button class="btn" id="btnCanc1">Cancelar</button>
+        </form>
+
+    </div>
+</div>
+
+<!-- Resultado -->
+<div class="row mt-3" id="containerR" style="display: none;">
+    <div class="col text-center">
+        <h2 id="TituloRpta"></h2>
+        <p id="result"></p>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var btnIniciarFormularioP = document.getElementById('button1');
+        var btnContarEmp = document.getElementById('button2');
+        var btnIniciarFormularioD = document.getElementById('button3');
+        var btnContadorVentas = document.getElementById('button4');
+
+        var btnExeP = document.getElementById('btnExe');
+        var btnCancelP = document.getElementById('btnCanc');
+        var btnExeD = document.getElementById('btnExe1');
+        var btnCancelD = document.getElementById('btnCanc1');
+
+        var formPagos = document.getElementById('formPagos');
+        var formDescripcion = document.getElementById('formDescripcion');
+        var ventanaFunciones = document.getElementById('ventanaFunciones');
+
+        btnIniciarFormularioP.addEventListener('click', function () {
+            // Oculta el formulario de eliminar
+            formPagos.style.display = 'block';
+            // Muestra el formulario de agregar
+            formDescripcion.style.display = 'none';
+            // Muestra la ventana
+            ventanaFunciones.style.display = 'block';
+        });
+
+        btnIniciarFormularioD.addEventListener('click', function () {
+            // Oculta el formulario de agregar
+            formPagos.style.display = 'none';
+            // Muestra el formulario de eliminar
+            formDescripcion.style.display = 'block';
+            // Muestra la ventana
+            ventanaFunciones.style.display = 'block';
+        });
+
+        btnCancelP.addEventListener('click', function () {
+            formPagos.style.display = 'none';
+            formDescripcion.style.display = 'none';
+        });
+
+        btnCancelD.addEventListener('click', function () {
+            formPagos.style.display = 'none';
+            formDescripcion.style.display = 'none';
+        })
+
+        btnContarEmp.addEventListener('click', function () {
+            fetch('/ContarEmp', {
+                method: 'POST',  // Cambiado de GET a POST
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Muestra el resultado en el contenedor
+                    document.getElementById('result').innerHTML = data.result;
+                    TituloRpta.innerHTML = "Cantidad de Empleados";
+                    document.getElementById('containerR').style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+
+        btnContadorVentas.addEventListener('click', function () {
+            fetch('/ContVentas', {
+                method: 'POST',  // Cambiado de GET a POST
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Muestra el resultado en el contenedor
+                    document.getElementById('result').innerHTML = data.result;
+                    TituloRpta.innerHTML = "Valor actual del Contador de Ventas";
+                    document.getElementById('containerR').style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+
+        formPagos.addEventListener('submit', function (event) {
+            // Evita que el formulario se envíe de la manera tradicional si se hizo clic en "Cancelar"
+            if (event.submitter.id === 'btnCanc') {
+                event.preventDefault();
+                // Puedes realizar acciones adicionales aquí si se hizo clic en "Cancelar"
+            } else {
+                // Obtén los datos del formulario
+                var formData = new FormData(formPagos);
+
+                // Realiza la solicitud Fetch al servidor
+                fetch('/PagosTotales', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+                        const contentType = response.headers.get('content-type');
+                        if (contentType && contentType.indexOf('application/json') !== -1) {
+                            return response.json();
+                        } else {
+                            throw new Error('Invalid content type in response');
+                        }
+                    })
+                    .then(data => {
+                        // Muestra el resultado en el contenedor
+                        result.innerHTML = data.result;
+                        TituloRpta.innerHTML = "Pagos totales del cliente";
+                        document.getElementById('containerR').style.display = 'block';
+
+                        ventanaVendedor.style.display = 'none';
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+
+                // ...
+            };
+        });
+
+        formDescripcion.addEventListener('submit', function (event) {
+            // Evita que el formulario se envíe de la manera tradicional si se hizo clic en "Cancelar"
+            if (event.submitter.id === 'btnCanc1') {
+                event.preventDefault();
+                // Puedes realizar acciones adicionales aquí si se hizo clic en "Cancelar"
+            } else {
+                // Obtén los datos del formulario
+                var formData = new FormData(formDescripcion);
+
+                // Realiza la solicitud Fetch al servidor
+                fetch('/ObtenerDescr', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+                        const contentType = response.headers.get('content-type');
+                        if (contentType && contentType.indexOf('application/json') !== -1) {
+                            return response.json();
+                        } else {
+                            throw new Error('Invalid content type in response');
+                        }
+                    })
+                    .then(data => {
+                        // Muestra el resultado en el contenedor
+                        result.innerHTML = data.result;
+                        TituloRpta.innerHTML = "Descripcion de la notificacion";
+                        document.getElementById('containerR').style.display = 'block';
+
+                        ventanaFunciones.style.display = 'none';
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+
+                // ...
+            };
+        });
+    });
+</script>
+{% endblock %}

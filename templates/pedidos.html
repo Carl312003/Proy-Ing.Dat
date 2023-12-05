@@ -1,0 +1,163 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h1>Lista de Pedidos</h1>
+<div class="container" id="container1">
+    <table class="table">
+        <thead class="table-light">
+            <tr>
+                <th>ID</th>
+                <th>Monto</th>
+                <th>Descripcion</th>
+                <th>Cantidad</th>
+                <th>Cliente asignado</th>
+                <th>Producto deseado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in resultados %}
+                <tr>
+                    <td>{{ row[0] }}</td>
+                    <td>{{ row[1] }}</td>
+                    <td>{{ row[2] }}</td>
+                    <td>{{ row[3] }}</td>
+                    <td>{{ row[4] }}</td>
+                    <td>{{ row[5] }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div> 
+
+<div class="container" id="container2">
+    <button class="btn" id="button1">Registrar pedido</button>
+    <button class="btn" id="button2">Eliminar pedido</button>
+</div>
+
+<div id="ventanaPedido" style="display: none;">
+    <div class="container" id="container3">
+        <form id="formAgregarPedido" method="post" action="/agregarPedido" style="display: none;">
+            <label for="idPedido">ID:</label>
+            <input type="number" id="idPedido" name="idPedido" required>
+            <label for="PDescripcion">Descripcion:</label>
+            <input type="text" id="PDescripcion" name="PDescripcion" required>
+            <label for="PCantidad">Cantidad:</label>
+            <input type="number" min="1" id="PCantidad" name="PCantidad" required>
+            <label for="PNombreClient">Nombre de Cliente:</label>
+            <input type="text" id="PNombreClient" name="PNombreClient" required>
+            <label for="PNombreProd">Nombre de Producto:</label>
+            <input type="text" id="PNombreProd" name="PNombreProd" required>
+            <button class="btn" id="btnAR" type="submit">Añadir pedido</button>
+            <button class="btn" id="btnAC">Cancelar</button>
+        </form>
+
+        <form id="formEliminarPedido" method="post" action="/eliminarPedido" style="display: none;">
+            <label for="idDPedido">ID:</label>
+            <input type="number" id="DidProducto" name="DidProducto" required>
+            <button class="btn" id="btnDR" type="submit">Eliminar pedido</button>
+            <button class="btn" id="btnDC">Cancelar</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var btnIniciarFormularioA = document.getElementById('button1');
+        var btnIniciarFormularioE = document.getElementById('button2');
+
+        var btnAgregarPedido = document.getElementById('btnAR');
+        var btnCancelarA = document.getElementById('btnAC');
+
+        var btnEliminarPedido = document.getElementById('btnDR');
+        var btnCancelarE = document.getElementById('btnDC');
+
+        var ventanaPedido = document.getElementById('ventanaPedido');
+        var formAgregarPedido = document.getElementById('formAgregarPedido');
+        var formEliminarPedido = document.getElementById('formEliminarPedido');
+
+        btnIniciarFormularioA.addEventListener('click', function () {
+            // Oculta el formulario de eliminar
+            formEliminarPedido.style.display = 'none';
+            // Muestra el formulario de agregar
+            formAgregarPedido.style.display = 'block';
+            // Muestra la ventana
+            ventanaPedido.style.display = 'block';
+        });
+
+        btnIniciarFormularioE.addEventListener('click', function () {
+            // Oculta el formulario de agregar
+            formAgregarPedido.style.display = 'none';
+            // Muestra el formulario de eliminar
+            formEliminarPedido.style.display = 'block';
+            // Muestra la ventana
+            ventanaPedido.style.display = 'block';
+        });
+
+        formAgregarPedido.addEventListener('submit', function (event) {
+            // Evita que el formulario se envíe de la manera tradicional si se hizo clic en "Cancelar"
+            if (event.submitter.id === 'btnAC') {
+                event.preventDefault();
+                // Puedes realizar acciones adicionales aquí si se hizo clic en "Cancelar"
+            } else {
+                // Obtén los datos del formulario
+                var formData = new FormData(formAgregarPedido);
+
+                // Realiza la solicitud Fetch al servidor
+                fetch('/agregarPedido', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        // Actualiza la tabla con los nuevos datos
+                        // Puedes utilizar el objeto 'data' para acceder a los nuevos resultados
+                        console.log(data);
+                        // Actualiza la tabla según sea necesario
+                        // ...
+
+                        // Cierra la ventana emergente
+                        ventanaPedido.style.display = 'none';
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+
+                // ...
+            };
+        });
+
+        formEliminarPedido.addEventListener('submit', function (event) {
+            // Evita que el formulario se envíe de la manera tradicional si se hizo clic en "Cancelar"
+            if (event.submitter.id === 'btnDC') {
+                event.preventDefault();
+                // Puedes realizar acciones adicionales aquí si se hizo clic en "Cancelar"
+            } else {
+                // Obtén los datos del formulario
+                var formData = new FormData(formEliminarPedido);
+
+                // Realiza la solicitud Fetch al servidor
+                fetch('/eliminarPedido', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        // Actualiza la tabla con los nuevos datos
+                        // Puedes utilizar el objeto 'data' para acceder a los nuevos resultados
+                        console.log(data);
+                        // Actualiza la tabla según sea necesario
+                        // ...
+
+                        // Cierra la ventana emergente
+                        ventanaPedido.style.display = 'none';
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+
+                // ...
+            };
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,169 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h1>Lista de Empleados</h1>
+<div class="container" id="container1">
+    <table class="table">
+        <thead class="table-light">
+            <tr>
+                <th>ID</th>
+                <th>DNI</th>
+                <th>Nombre</th>
+                <th>Apellido Paterno</th>
+                <th>Apellido Materno</th>
+                <th>Telefono</th>
+                <th>Salario</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in resultados %}
+                <tr>
+                    <td>{{ row[0] }}</td>
+                    <td>{{ row[1] }}</td>
+                    <td>{{ row[2] }}</td>
+                    <td>{{ row[3] }}</td>
+                    <td>{{ row[4] }}</td>
+                    <td>{{ row[5] }}</td>
+                    <td>{{ row[6] }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="container" id="container2">
+    <button class="btn" id="button1">Registrar empleado</button>
+    <button class="btn" id="button2">Eliminar empleado</button>
+</div>
+
+<div id="ventanaEmpleado" style="display: none;">
+    <div class="container" id="container3">
+        <form id="formAgregarEmpleado" method="post" action="/agregarEmpleado" style="display: none;">
+            <label for="idEEmpleado">ID:</label>
+            <input type="text" id="idEEmpleado" name="idEEmpleado" required>
+            <label for="Edni">DNI:</label>
+            <input type="number" id="Edni" name="Edni" required>
+            <label for="Enombre">Nombre:</label>
+            <input type="text" id="Enombre" name="Enombre" required>
+            <label for="EApellidoPat">Apellido Paterno:</label>
+            <input type="text" id="EApellidoPat" name="EApellidoPat" required>
+            <label for="EApellidoMat">Apellido Materno:</label>
+            <input type="text" id="EApellidoMat" name="EApellidoMat" required>
+            <label for="ETelefono">Telefono:</label>
+            <input type="number" id="ETelefono" name="ETelefono" required>
+            <button class="btn" id="btnAR" type="submit">Añadir empleado</button>
+            <button class="btn" id="btnAC">Cancelar</button>
+        </form>
+
+        <form id="formEliminarEmpleado" method="post" action="/eliminarEmpleado" style="display: none;">
+            <label for="idEmpleadoD">ID:</label>
+            <input type="number" id="idEmpleadoD" name="idEmpleadoD" required>
+            <label for="dniD">DNI:</label>
+            <input type="number" id="dniD" name="dniD" required>
+            <button class="btn" id="btnDR" type="submit">Eliminar empleado</button>
+            <button class="btn" id="btnDC">Cancelar</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var btnIniciarFormularioA = document.getElementById('button1');
+        var btnIniciarFormularioE = document.getElementById('button2');
+
+        var btnAgregarEmpleado = document.getElementById('btnAR');
+        var btnCerrar = document.getElementById('btnAC');
+
+        var btnEliminarEmpleado = document.getElementById('btnDR');
+        var btnCancelar = document.getElementById('btnDC');
+
+        var ventanaEmpleado = document.getElementById('ventanaEmpleado');
+        var formAgregarEmpleado = document.getElementById('formAgregarEmpleado');
+        var formEliminarEmpleado = document.getElementById('formEliminarEmpleado');
+
+        btnIniciarFormularioA.addEventListener('click', function () {
+            // Oculta el formulario de eliminar
+            formEliminarEmpleado.style.display = 'none';
+            // Muestra el formulario de agregar
+            formAgregarEmpleado.style.display = 'block';
+            // Muestra la ventana
+            ventanaEmpleado.style.display = 'block';
+        });
+
+        btnIniciarFormularioE.addEventListener('click', function () {
+            // Oculta el formulario de agregar
+            formAgregarEmpleado.style.display = 'none';
+            // Muestra el formulario de eliminar
+            formEliminarEmpleado.style.display = 'block';
+            // Muestra la ventana
+            ventanaEmpleado.style.display = 'block';
+        });
+
+        formAgregarEmpleado.addEventListener('submit', function (event) {
+            // Evita que el formulario se envíe de la manera tradicional si se hizo clic en "Cancelar"
+            if (event.submitter.id === 'btnAC') {
+                event.preventDefault();
+                // Puedes realizar acciones adicionales aquí si se hizo clic en "Cancelar"
+            } else {
+                // Obtén los datos del formulario
+                var formData = new FormData(formAgregarEmpleado);
+
+                // Realiza la solicitud Fetch al servidor
+                fetch('/agregarEmpleado', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        // Actualiza la tabla con los nuevos datos
+                        // Puedes utilizar el objeto 'data' para acceder a los nuevos resultados
+                        console.log(data);
+                        // Actualiza la tabla según sea necesario
+                        // ...
+
+                        // Cierra la ventana emergente
+                        ventanaEmpleado.style.display = 'none';
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+
+                // ...
+            };
+        });
+
+        formEliminarEmpleado.addEventListener('submit', function (event) {
+            // Evita que el formulario se envíe de la manera tradicional si se hizo clic en "Cancelar"
+            if (event.submitter.id === 'btnDC') {
+                event.preventDefault();
+                // Puedes realizar acciones adicionales aquí si se hizo clic en "Cancelar"
+            } else {
+                // Obtén los datos del formulario
+                var formData = new FormData(formEliminarEmpleado);
+
+                // Realiza la solicitud Fetch al servidor
+                fetch('/eliminarEmpleado', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        // Actualiza la tabla con los nuevos datos
+                        // Puedes utilizar el objeto 'data' para acceder a los nuevos resultados
+                        console.log(data);
+                        // Actualiza la tabla según sea necesario
+                        // ...
+
+                        // Cierra la ventana emergente
+                        ventanaEmpleado.style.display = 'none';
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+
+                // ...
+            };
+        });
+    });
+</script>
+{% endblock %}

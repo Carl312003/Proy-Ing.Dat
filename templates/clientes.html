@@ -1,0 +1,167 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h1>Lista de Clientes atendidos</h1>
+<div class="container" id="container1">
+    <table class="table">
+        <thead class="table-light">
+            <tr>
+                <th>ID</th>
+                <th>DNI</th>
+                <th>Nombre</th>
+                <th>Apellido Paterno</th>
+                <th>Apellido Materno</th>
+                <th>Telefono</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in resultados %}
+            <tr>
+                <td>{{ row[0] }}</td>
+                <td>{{ row[1] }}</td>
+                <td>{{ row[2] }}</td>
+                <td>{{ row[3] }}</td>
+                <td>{{ row[4] }}</td>
+                <td>{{ row[5] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="container" id="container2">
+    <button class="btn" id="button1">Registrar cliente</button>
+    <button class="btn" id="button2">Eliminar cliente</button>
+</div>
+
+<div id="ventanaAgregarUsuario" style="display: none;">
+    <div class="container" id="container3">
+        <form id="formularioAgregarUsuario" method="post" action="/agregarCliente" style="display: none;">
+            <label for="idCliente">ID:</label>
+            <input type="number" id="idCliente" name="idCliente" required>
+            <label for="dni">DNI:</label>
+            <input type="number" id="dni" name="dni" required>
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" name="nombre" required>
+            <label for="appellidoPat">Apellido Paterno:</label>
+            <input type="text" id="apellidoPat" name="apellidoPat" required>
+            <label for="apellidoMat">Apellido Materno:</label>
+            <input type="text" id="apellidoMat" name="apellidoMat" required>
+            <label for="telefono">Telefono:</label>
+            <input type="number" id="telefono" name="telefono" required>
+            <button class="btn" id="btnAR" type="submit">Añadir cliente</button>
+            <button class="btn" id="btnAC">Cancelar</button>
+        </form>
+
+        <form id="formularioEliminarUsuario" method="post" action="/eliminarCliente" style="display: none;">
+            <label for="idClienteD">ID:</label>
+            <input type="number" id="idClienteD" name="idClienteD" required>
+            <label for="dniD">DNI:</label>
+            <input type="number" id="dniD" name="dniD" required>
+            <button class="btn" id="btnDR" type="submit">Eliminar cliente</button>
+            <button class="btn" id="btnDC">Cancelar</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var btnIniciarFormularioA = document.getElementById('button1');
+        var btnIniciarFormularioE = document.getElementById('button2');
+
+        var btnAgregarCliente = document.getElementById('btnAR');
+        var btnCerrar = document.getElementById('btnAC');
+
+        var btnEliminarCliente = document.getElementById('btnDR');
+        var btnCancelar = document.getElementById('btnDC');
+
+        var ventanaAgregarUsuario = document.getElementById('ventanaAgregarUsuario');
+        var formAgregarCliente = document.getElementById('formularioAgregarUsuario');
+        var formEliminarCliente = document.getElementById('formularioEliminarUsuario');
+
+        btnIniciarFormularioA.addEventListener('click', function () {
+            // Oculta el formulario de eliminar
+            formEliminarCliente.style.display = 'none';
+            // Muestra el formulario de agregar
+            formAgregarCliente.style.display = 'block';
+            // Muestra la ventana
+            ventanaAgregarUsuario.style.display = 'block';
+        });
+
+        btnIniciarFormularioE.addEventListener('click', function () {
+            // Oculta el formulario de agregar
+            formAgregarCliente.style.display = 'none';
+            // Muestra el formulario de eliminar
+            formEliminarCliente.style.display = 'block';
+            // Muestra la ventana
+            ventanaAgregarUsuario.style.display = 'block';
+        });
+
+        formAgregarCliente.addEventListener('submit', function (event) {
+            // Evita que el formulario se envíe de la manera tradicional si se hizo clic en "Cancelar"
+            if (event.submitter.id === 'btnAC') {
+                event.preventDefault();
+                // Puedes realizar acciones adicionales aquí si se hizo clic en "Cancelar"
+            } else {
+                // Obtén los datos del formulario
+                var formData = new FormData(formAgregarCliente);
+
+                // Realiza la solicitud Fetch al servidor
+                fetch('/agregarCliente', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        // Actualiza la tabla con los nuevos datos
+                        // Puedes utilizar el objeto 'data' para acceder a los nuevos resultados
+                        console.log(data);
+                        // Actualiza la tabla según sea necesario
+                        // ...
+
+                        // Cierra la ventana emergente
+                        ventanaAgregarUsuario.style.display = 'none';
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+
+                // ...
+            };
+        });
+
+        formEliminarCliente.addEventListener('submit', function (event) {
+            // Evita que el formulario se envíe de la manera tradicional si se hizo clic en "Cancelar"
+            if (event.submitter.id === 'btnDC') {
+                event.preventDefault();
+                // Puedes realizar acciones adicionales aquí si se hizo clic en "Cancelar"
+            } else {
+                // Obtén los datos del formulario
+                var formData = new FormData(formEliminarCliente);
+
+                // Realiza la solicitud Fetch al servidor
+                fetch('/eliminarCliente', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        // Actualiza la tabla con los nuevos datos
+                        // Puedes utilizar el objeto 'data' para acceder a los nuevos resultados
+                        console.log(data);
+                        // Actualiza la tabla según sea necesario
+                        // ...
+
+                        // Cierra la ventana emergente
+                        ventanaAgregarUsuario.style.display = 'none';
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+
+                // ...
+            };
+        });
+    });
+</script>
+{% endblock %}

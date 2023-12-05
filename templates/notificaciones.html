@@ -1,0 +1,170 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h1>Lista de Notificaciones recibidas</h1>
+<div class="container" id="container1">
+    <table class="table">
+        <thead class="table-light">
+            <tr>
+                <th>ID</th>
+                <th>Tipo</th>
+                <th>Descripcion</th>
+                <th>ID Pedido</th>
+                <th>Empleado asociado</th>
+                <th>Vendedor asociado</th>
+                <th>ID Pago</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in resultados %}
+            <tr>
+                <td>{{ row[0] }}</td>
+                <td>{{ row[1] }}</td>
+                <td>{{ row[2] }}</td>
+                <td>{{ row[3] }}</td>
+                <td>{{ row[4] }}</td>
+                <td>{{ row[5] }}</td>
+                <td>{{ row[6] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="container" id="container2">
+    <button class="btn" id="button1">Registrar notificacion</button>
+    <button class="btn" id="button2">Eliminar notificacion</button>
+</div>
+
+
+<div id="ventanaNotificacion" style="display: none;">
+    <div class="container" id="container3">
+        <form id="formAgregarNotificacion" method="post" action="/agregarNotificacion" style="display: none;">
+            <label for="idENotificacion">ID:</label>
+            <input type="number" id="idENotificacion" name="idENotificacion" required>
+            <label for="NTipo">Tipo:</label>
+            <input type="text" id="NTipo" name="NTipo" required>
+            <label for="NDescripcion">Descripcion:</label>
+            <input type="text" id="NDescripcion" name="NDescripcion" required>
+            <label for="NidPedido">ID Pedido:</label>
+            <input type="number" id="NidPedido" name="NidPedido" required>
+            <label for="NNombreEmp">Nombre del Empleado:</label>
+            <input type="text" id="NNombreEmp" name="NNombreEmp" required>
+            <label for="NNombreVend">Nombre del Vendedor:</label>
+            <input type="text" id="NNombreVend" name="NNombreVend" required>
+            <label for="NidPago">ID Pago:</label>
+            <input type="number" id="NidPago" name="NidPago" required>
+            <button class="btn" id="btnAR" type="submit">Añadir notificacion</button>
+            <button class="btn" id="btnAC">Cancelar</button>
+        </form>
+
+        <form id="formEliminarNotificacion" method="post" action="/eliminarNotificacion" style="display: none;">
+            <label for="idDNotificacion">ID:</label>
+            <input type="number" id="idDNotificacion" name="idDNotificacion" required>
+            <button class="btn" id="btnDR" type="submit">Eliminar notificacion</button>
+            <button class="btn" id="btnDC">Cancelar</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var btnIniciarFormularioA = document.getElementById('button1');
+        var btnIniciarFormularioE = document.getElementById('button2');
+
+        var btnAgregarNoti = document.getElementById('btnAR');
+        var btnCancelarA = document.getElementById('btnAC');
+
+        var btnEliminarNoti = document.getElementById('btnDR');
+        var btnCancelarE = document.getElementById('btnDC');
+
+        var ventanaNotificacion = document.getElementById('ventanaNotificacion');
+        var formAgregarNotificacion = document.getElementById('formAgregarNotificacion');
+        var formEliminarNotificacion = document.getElementById('formEliminarNotificacion');
+
+        btnIniciarFormularioA.addEventListener('click', function () {
+            // Oculta el formulario de eliminar
+            formEliminarNotificacion.style.display = 'none';
+            // Muestra el formulario de agregar
+            formAgregarNotificacion.style.display = 'block';
+            // Muestra la ventana
+            ventanaNotificacion.style.display = 'block';
+        });
+
+        btnIniciarFormularioE.addEventListener('click', function () {
+            // Oculta el formulario de agregar
+            formAgregarNotificacion.style.display = 'none';
+            // Muestra el formulario de eliminar
+            formEliminarNotificacion.style.display = 'block';
+            // Muestra la ventana
+            ventanaNotificacion.style.display = 'block';
+        });
+
+        formAgregarNotificacion.addEventListener('submit', function (event) {
+            // Evita que el formulario se envíe de la manera tradicional si se hizo clic en "Cancelar"
+            if (event.submitter.id === 'btnAC') {
+                event.preventDefault();
+                // Puedes realizar acciones adicionales aquí si se hizo clic en "Cancelar"
+            } else {
+                // Obtén los datos del formulario
+                var formData = new FormData(formAgregarNotificacion);
+
+                // Realiza la solicitud Fetch al servidor
+                fetch('/agregarNotificacion', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        // Actualiza la tabla con los nuevos datos
+                        // Puedes utilizar el objeto 'data' para acceder a los nuevos resultados
+                        console.log(data);
+                        // Actualiza la tabla según sea necesario
+                        // ...
+
+                        // Cierra la ventana emergente
+                        ventanaNotificacion.style.display = 'none';
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+
+                // ...
+            };
+        });
+
+        formEliminarNotificacion.addEventListener('submit', function (event) {
+            // Evita que el formulario se envíe de la manera tradicional si se hizo clic en "Cancelar"
+            if (event.submitter.id === 'btnDC') {
+                event.preventDefault();
+                // Puedes realizar acciones adicionales aquí si se hizo clic en "Cancelar"
+            } else {
+                // Obtén los datos del formulario
+                var formData = new FormData(formEliminarNotificacion);
+
+                // Realiza la solicitud Fetch al servidor
+                fetch('/eliminarNotificacion', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        // Actualiza la tabla con los nuevos datos
+                        // Puedes utilizar el objeto 'data' para acceder a los nuevos resultados
+                        console.log(data);
+                        // Actualiza la tabla según sea necesario
+                        // ...
+
+                        // Cierra la ventana emergente
+                        ventanaNotificacion.style.display = 'none';
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+
+                // ...
+            };
+        });
+    });
+</script>
+{% endblock %}

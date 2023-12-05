@@ -1,0 +1,173 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h1>Lista de Productos de la empresa</h1>
+<div class="container" id="container1">
+    <table class="table">
+        <thead class="table-light">
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Tipo</th>
+                <th>Stock</th>
+                <th>Precio</th>
+                <th>Talla</th>
+                <th>Color</th>
+                <th>Proveedor</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in resultados %}
+                <tr>
+                    <td>{{ row[0] }}</td>
+                    <td>{{ row[1] }}</td>
+                    <td>{{ row[2] }}</td>
+                    <td>{{ row[3] }}</td>
+                    <td>{{ row[4] }}</td>
+                    <td>{{ row[5] }}</td>
+                    <td>{{ row[6] }}</td>
+                    <td>{{ row[7] }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>        
+    </table>
+</div>
+
+<div class="container" id="container2">
+    <button class="btn" id="button1">Registrar producto</button>
+    <button class="btn" id="button2">Eliminar producto</button>
+</div>
+
+<div id="ventanaDatosProducto" style="display: none;">
+    <div class="container" id="container3">
+        <form id="formAgregarProducto" method="post" action="/agregarProducto" style="display: none;">
+            <label for="idRProducto">ID:</label>
+            <input type="number" id="idRProducto" name="idRProducto" required>
+            <label for="RNombre">Nombre:</label>
+            <input type="textr" id="RNombre" name="RNombre" required>
+            <label for="RTipo">Tipo:</label>
+            <input type="text" id="RTipo" name="RTipo" required>
+            <label for="RStock">Stock:</label>
+            <input type="number" id="RStock" name="RStock" required>
+            <label for="RPrecio">Precio:</label>
+            <input type="number" step="any" min="0" id="RPrecio" name="RPrecio" required>
+            <label for="RTalla">Talla:</label>
+            <input type="text" id="RTalla" name="RTalla" required>
+            <label for="RColor">Color:</label>
+            <input type="text" id="RColor" name="RColor" required>
+            <label for="RNombreVendedor">Vendedor:</label>
+            <input type="text" id="RNombreVendedor" name="RNombreVendedor" required>
+            <button class="btn" id="btnAR" type="submit">Añadir producto</button>
+            <button class="btn" id="btnAC">Cancelar</button>
+        </form>
+
+        <form id="formEliminarProducto" method="post" action="/eliminarProducto" style="display: none;">
+            <label for="DidProducto">ID:</label>
+            <input type="number" id="DidProducto" name="DidProducto" required>
+            <button class="btn" id="btnDR" type="submit">Eliminar producto</button>
+            <button class="btn" id="btnDC">Cancelar</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var btnIniciarFormularioA = document.getElementById('button1');
+        var btnIniciarFormularioE = document.getElementById('button2');
+
+        var btnAgregarProducto = document.getElementById('btnAR');
+        var btnCancelarA = document.getElementById('btnAC');
+
+        var btnEliminarProducto = document.getElementById('btnDR');
+        var btnCancelarE = document.getElementById('btnDC');
+
+        var ventanaProducto = document.getElementById('ventanaDatosProducto');
+        var formAgregarProducto = document.getElementById('formAgregarProducto');
+        var formEliminarProducto = document.getElementById('formEliminarProducto');
+
+        btnIniciarFormularioA.addEventListener('click', function () {
+            // Oculta el formulario de eliminar
+            formEliminarProducto.style.display = 'none';
+            // Muestra el formulario de agregar
+            formAgregarProducto.style.display = 'block';
+            // Muestra la ventana
+            ventanaProducto.style.display = 'block';
+        });
+
+        btnIniciarFormularioE.addEventListener('click', function () {
+            // Oculta el formulario de agregar
+            formAgregarProducto.style.display = 'none';
+            // Muestra el formulario de eliminar
+            formEliminarProducto.style.display = 'block';
+            // Muestra la ventana
+            ventanaProducto.style.display = 'block';
+        });
+
+        formAgregarProducto.addEventListener('submit', function (event) {
+            // Evita que el formulario se envíe de la manera tradicional si se hizo clic en "Cancelar"
+            if (event.submitter.id === 'btnAC') {
+                event.preventDefault();
+                // Puedes realizar acciones adicionales aquí si se hizo clic en "Cancelar"
+            } else {
+                // Obtén los datos del formulario
+                var formData = new FormData(formAgregarProducto);
+
+                // Realiza la solicitud Fetch al servidor
+                fetch('/agregarProducto', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        // Actualiza la tabla con los nuevos datos
+                        // Puedes utilizar el objeto 'data' para acceder a los nuevos resultados
+                        console.log(data);
+                        // Actualiza la tabla según sea necesario
+                        // ...
+
+                        // Cierra la ventana emergente
+                        ventanaProducto.style.display = 'none';
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+
+                // ...
+            };
+        });
+
+        formEliminarProducto.addEventListener('submit', function (event) {
+            // Evita que el formulario se envíe de la manera tradicional si se hizo clic en "Cancelar"
+            if (event.submitter.id === 'btnDC') {
+                event.preventDefault();
+                // Puedes realizar acciones adicionales aquí si se hizo clic en "Cancelar"
+            } else {
+                // Obtén los datos del formulario
+                var formData = new FormData(formEliminarProducto);
+
+                // Realiza la solicitud Fetch al servidor
+                fetch('/eliminarProducto', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        // Actualiza la tabla con los nuevos datos
+                        // Puedes utilizar el objeto 'data' para acceder a los nuevos resultados
+                        console.log(data);
+                        // Actualiza la tabla según sea necesario
+                        // ...
+
+                        // Cierra la ventana emergente
+                        ventanaProducto.style.display = 'none';
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+
+                // ...
+            };
+        });
+    });
+</script>
+{% endblock %}

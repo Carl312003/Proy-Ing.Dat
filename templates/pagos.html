@@ -1,0 +1,165 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h1>Lista de Pagos realizados</h1>
+<div class="container" id="container1">
+    <table class="table">
+        <thead class="table-light">
+            <tr>
+                <th>ID</th>
+                <th>Monto</th>
+                <th>Fecha de Pago</th>
+                <th>Estado</th>
+                <th>Emisor</th>
+                <th>Pedido asociado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in resultados %}
+                <tr>
+                    <td>{{ row[0] }}</td>
+                    <td>{{ row[1] }}</td>
+                    <td>{{ row[2] }}</td>
+                    <td>{{ row[3] }}</td>
+                    <td>{{ row[4] }}</td>
+                    <td>{{ row[5] }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="container" id="container2">
+    <button class="btn" id="button1">Registrar pago</button>
+    <button class="btn" id="button2">Eliminar pago</button>
+</div>
+
+<div id="ventanaPago" style="display: none;">
+    <div class="container" id="container3">
+        <form id="formAgregarPago" method="post" action="/agregarPago" style="display: none;">
+            <label for="idPPago">ID:</label>
+            <input type="number" id="idPPago" name="idPPago" required>
+            <label for="PMonto">Monto:</label>
+            <input type="number" step="any" id="PMonto" name="PMonto" required>
+            <label for="PFechaPago">Fecha de Pago:</label>
+            <input type="date" min="2023-01-01" max="2023-12-31" id="PFechaPago" name="PFechaPago" required>
+            <label for="PEstado">Estado:</label>
+            <input type="text" id="PEstado" name="PEstado" required>
+            <label for="PNombreClient">Nombre del Cliente:</label>
+            <input type="text" id="PNombreClient" name="PNombreClient" required>
+            <label for="PidPedido">ID del Pedido:</label>
+            <input type="number" id="PidPedido" name="PidPedido" required>
+            <button class="btn" id="btnAR" type="submit">Añadir pago</button>
+            <button class="btn" id="btnAC">Cancelar</button>
+        </form>
+
+        <form id="formEliminarPago" method="post" action="/eliminarPago" style="display: none;">
+            <label for="idDPago">ID:</label>
+            <input type="number" id="idDPago" name="idDPago" required>
+            <button class="btn" id="btnDR" type="submit">Eliminar pago</button>
+            <button class="btn" id="btnDC">Cancelar</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var btnIniciarFormularioA = document.getElementById('button1');
+        var btnIniciarFormularioE = document.getElementById('button2');
+
+        var btnAgregarPago = document.getElementById('btnAR');
+        var btnCancelarA = document.getElementById('btnAC');
+
+        var btnEliminarPago = document.getElementById('btnDR');
+        var btnCancelarE = document.getElementById('btnDC');
+
+        var ventanaPago = document.getElementById('ventanaPago');
+        var formAgregarPago = document.getElementById('formAgregarPago');
+        var formEliminarPago = document.getElementById('formEliminarPago');
+
+        btnIniciarFormularioA.addEventListener('click', function () {
+            // Oculta el formulario de eliminar
+            formEliminarPago.style.display = 'none';
+            // Muestra el formulario de agregar
+            formAgregarPago.style.display = 'block';
+            // Muestra la ventana
+            ventanaPago.style.display = 'block';
+        });
+
+        btnIniciarFormularioE.addEventListener('click', function () {
+            // Oculta el formulario de agregar
+            formAgregarPago.style.display = 'none';
+            // Muestra el formulario de eliminar
+            formEliminarPago.style.display = 'block';
+            // Muestra la ventana
+            ventanaPago.style.display = 'block';
+        });
+
+        formAgregarPago.addEventListener('submit', function (event) {
+            // Evita que el formulario se envíe de la manera tradicional si se hizo clic en "Cancelar"
+            if (event.submitter.id === 'btnAC') {
+                event.preventDefault();
+                // Puedes realizar acciones adicionales aquí si se hizo clic en "Cancelar"
+            } else {
+                // Obtén los datos del formulario
+                var formData = new FormData(formAgregarPago);
+
+                // Realiza la solicitud Fetch al servidor
+                fetch('/agregarPago', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        // Actualiza la tabla con los nuevos datos
+                        // Puedes utilizar el objeto 'data' para acceder a los nuevos resultados
+                        console.log(data);
+                        // Actualiza la tabla según sea necesario
+                        // ...
+
+                        // Cierra la ventana emergente
+                        ventanaPago.style.display = 'none';
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+
+                // ...
+            };
+        });
+
+        formEliminarPago.addEventListener('submit', function (event) {
+            // Evita que el formulario se envíe de la manera tradicional si se hizo clic en "Cancelar"
+            if (event.submitter.id === 'btnDC') {
+                event.preventDefault();
+                // Puedes realizar acciones adicionales aquí si se hizo clic en "Cancelar"
+            } else {
+                // Obtén los datos del formulario
+                var formData = new FormData(formEliminarPago);
+
+                // Realiza la solicitud Fetch al servidor
+                fetch('/eliminarPago', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        // Actualiza la tabla con los nuevos datos
+                        // Puedes utilizar el objeto 'data' para acceder a los nuevos resultados
+                        console.log(data);
+                        // Actualiza la tabla según sea necesario
+                        // ...
+
+                        // Cierra la ventana emergente
+                        ventanaPago.style.display = 'none';
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+
+                // ...
+            };
+        });
+    });
+</script>
+{% endblock %}
